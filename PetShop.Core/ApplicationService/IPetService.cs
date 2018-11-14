@@ -1,7 +1,6 @@
 ﻿using PetShop.Core.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PetShop.Core.ApplicationService
 {
@@ -9,21 +8,26 @@ namespace PetShop.Core.ApplicationService
     {
         List<Pet> GetAllPets();
 
-        Pet addPet(String name, String type, DateTime birthdate,
-            DateTime soldDate, String color, String previousOwner, double price);
+        //New Pets
+        Pet addPet(string name, string type, DateTime birthdate,
+            DateTime soldDate, string color, Owner previousOwner, double price);
 
+        //Create
         Pet CreatePet(Pet pet);
 
-        void DeletePet(int Id);
+        //Delete
+        void DeletePet(int id);
 
-        List<Pet> SortByName(String name);
 
-        List<Pet> SortByType(String type);
-
+        Pet FindPetById(int id);
+        List<Pet> SortByName(string name);
+        List<Pet> SortByType(string type);
         List<Pet> SortByPrice();
-
         List<Pet> Get5CheapestPets();
+        List<Pet> GetAllByType(string type);
 
-        Pet EditPet(int id);
+
+        //Update
+        Pet EditPet(Pet petEdit);
     }
 }

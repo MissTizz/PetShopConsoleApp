@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using PetShop.Core.DomainService;
 using PetShop.Core.Entities;
 
@@ -9,7 +8,6 @@ namespace PetShop.Core.ApplicationService.Impl
 {
     public class PetService : IPetService
     {
-        IEnumerable<Pet> Pets;
         readonly IPetRepository _petRepository;
 
         public PetService(IPetRepository petRepository)
@@ -17,7 +15,8 @@ namespace PetShop.Core.ApplicationService.Impl
             _petRepository = petRepository;
         }
 
-        public Pet addPet(string name, string type, DateTime birthdate, DateTime soldDate, string color, string previousOwner, double price)
+        public Pet addPet(string name, string type, DateTime birthdate, 
+            DateTime soldDate, string color, Owner previousOwner, double price)
         {
             var pet = new Pet()
             {
@@ -44,18 +43,22 @@ namespace PetShop.Core.ApplicationService.Impl
 
         public List<Pet> Get5CheapestPets()
         {
-            Pets = new List<Pet>();
-            var pet = Pets.ToList();
-            pet.Clear();
-            var list = _petRepository.ReadPets().ToList();
-            foreach (var pets in list)
-            {
-                if(pets.SoldDate.Year == 0001)
-                {
-                    pet.Add(pets);
-                }
-            }
-            return pet.OrderBy(pets => pets.Price).Take(5).ToList();
+            return _petRepository.ReadPets()
+                .OrderBy(pet => pet.Price).Take(5).ToList();
+        }
+
+        public List<Pet> SortByPrice()
+        {
+            return _petRepository.ReadPets().OrderBy(pet => pet.Price).ToList();
+        }
+
+        public List<Pet> GetAllByType(string type)
+        {
+            var list = _petRepository.ReadPets();
+
+            var queryContinued = list.Where(pet => pet.Type.Equals(type));
+
+            return queryContinued.ToList();
         }
 
         public List<Pet> GetAllPets()
@@ -68,27 +71,28 @@ namespace PetShop.Core.ApplicationService.Impl
             return _petRepository.ReadPets().Where(pet => pet.Name.Contains(name)).ToList();
         }
 
-        public List<Pet> SortByPrice()
-        {
-            return _petRepository.ReadPets().OrderByDescending(pet => pet.Price).ToList();
-        }
-
         public List<Pet> SortByType(string type)
         {
             return _petRepository.ReadPets().Where(pet => pet.Type.Contains(type)).ToList();
         }
 
-        public Pet EditPet(int id)
+        public Pet EditPet(Pet petEdit)
         {
-            var list = _petRepository.ReadPets().ToList();
-            foreach (var pets in list)
-            {
-                if(pets.PetID == id)
-                {
-                    return pets;
-                }
-            }
-            return null;
+            var pet = FindPetById(petEdit.PetId);
+            pet.Name = petEdit.Name;
+            pet.Type = petEdit.Type;
+            pet.Birthdate = petEdit.Birthdate;
+            pet.SoldDate = petEdit.SoldDate;
+            pet.Color = petEdit.Color;
+            pet.PreviousOwner = petEdit.PreviousOwner;
+            pet.Price = petEdit.Price;
+            _petRepository.Update(pet);
+            return pet;
+        }
+
+        public Pet FindPetById(int id)
+        {
+            return _petRepository.ReadyById(id);
         }
     }
 }

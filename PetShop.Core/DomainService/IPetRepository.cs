@@ -1,17 +1,21 @@
 ﻿using PetShop.Core.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PetShop.Core.DomainService
 {
     public interface IPetRepository
     {
+        //Read Data
         IEnumerable<Pet> ReadPets();
+        Pet ReadyById(int id);
 
+        //Create Data
         Pet CreatePet(Pet pet);
 
-        void DeletePet(int Id);
+        //Update Data
+        Pet Update(Pet petUpdate);
 
+        //Delete Data
+        void DeletePet(int id);
     }
 }
