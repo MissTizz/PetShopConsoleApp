@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PetShop.Core.ApplicationService;
 using PetShop.Core.Entities;
@@ -18,9 +19,18 @@ namespace Tizz.PetRestAPI.Controllers
 
         // GET api/pets - READ ALL
         [HttpGet]
-        public ActionResult<IEnumerable<Pet>> Get()
+        public ActionResult<IEnumerable<Pet>> Get([FromQuery] Filter filter)
         {
-            return _petService.GetAllPets();
+            try
+            {
+                return Ok(_petService.GetFilteredPets(filter));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            
+            
         }
 
         // GET api/pets/5 - READ BY ID

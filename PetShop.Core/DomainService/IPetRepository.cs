@@ -6,7 +6,7 @@ namespace PetShop.Core.DomainService
     public interface IPetRepository
     {
         //Read Data
-        IEnumerable<Pet> ReadPets();
+        IEnumerable<Pet> ReadPets(Filter filter = null);
         Pet ReadyById(int id);
 
         //Create Data
@@ -17,5 +17,7 @@ namespace PetShop.Core.DomainService
 
         //Delete Data
         void DeletePet(int id);
+
+        int Count();
     }
 }

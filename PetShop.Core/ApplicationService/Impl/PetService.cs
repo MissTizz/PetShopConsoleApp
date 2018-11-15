@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using PetShop.Core.DomainService;
 using PetShop.Core.Entities;
 
@@ -13,6 +15,19 @@ namespace PetShop.Core.ApplicationService.Impl
         public PetService(IPetRepository petRepository)
         {
             _petRepository = petRepository;
+        }
+
+        public List<Pet> GetFilteredPets(Filter filter)
+        {
+            if (filter.CurrentPage < 0 || filter.ItemsPerPage < 0)
+            {
+                throw new InvalidDataException("CurrentPage or ItemsPage MUST be zero or higher");
+            }
+            if ((filter.CurrentPage -1 * filter.ItemsPerPage) >= _petRepository.Count())
+            {
+                throw new InvalidDataException("Index out bounds, CurrentPage is too high");
+            }
+            return _petRepository.ReadPets(filter).ToList();
         }
 
         public Pet addPet(string name, string type, DateTime birthdate, 

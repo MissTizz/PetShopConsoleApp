@@ -22,9 +22,16 @@ namespace PetShop.Infrastructure.Data.Repositories
             return pet;
         }
 
-        public IEnumerable<Pet> ReadPets()
+        public IEnumerable<Pet> ReadPets(Filter filter)
         {
-            return _ctx.Pets;
+            if(filter == null)
+            {
+                return _ctx.Pets;
+            }
+
+            return _ctx.Pets
+                .Skip((filter.CurrentPage - 1) * filter.ItemsPerPage)
+                .Take(filter.ItemsPerPage);
         }
 
         public Pet ReadyById(int id)
@@ -47,6 +54,11 @@ namespace PetShop.Infrastructure.Data.Repositories
         {
             var petDelete = _ctx.Remove(new Pet() { PetId = id }).Entity;
             _ctx.SaveChanges();
+        }
+
+        public int Count()
+        {
+            return _ctx.Pets.Count();
         }
     }
 }

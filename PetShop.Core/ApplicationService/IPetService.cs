@@ -7,6 +7,7 @@ namespace PetShop.Core.ApplicationService
     public interface IPetService
     {
         List<Pet> GetAllPets();
+        List<Pet> GetFilteredPets(Filter filter);
 
         //New Pets
         Pet addPet(string name, string type, DateTime birthdate,
